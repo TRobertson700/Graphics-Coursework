@@ -152,10 +152,13 @@
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="Collider.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="Renderer.h" />
   </ItemGroup>
   <ItemGroup>
