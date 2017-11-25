@@ -1,16 +1,22 @@
 #pragma once
 #include <glew.h>
+#include "GameObject.h"
 
-class player
+class Player : public GameObject
 {
 public:
-	player();
-	~player();
-	void render();
+	Player();
+	~Player();
 	void update();
+	void draw();
 
-private:
-	GLuint model[2], texture;
+	glm::vec3 getPosition() { return position; }
+	glm::vec3 setPosition(glm::vec3 position) { return this->position = position; }
+
+	AABB getAABB() { return box; }
 	
+private:
+	glm::vec3 position;
+	AABB box;
 };
 

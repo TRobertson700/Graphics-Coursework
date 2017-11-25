@@ -1,6 +1,9 @@
 #pragma once
 
-class Collidable
+class Collider
 {
-
+public:
+	Collider() {}
+	virtual ~Collider() {}
+	virtual void update() = 0;
 };

@@ -6,6 +6,8 @@
 
 #define DEG_TO_RADIAN 0.017453293
 
+
+
 Mesh::Mesh()
 {
 }
@@ -13,6 +15,7 @@ Mesh::Mesh()
 
 Mesh::~Mesh()
 {
+	delete this;
 }
 
 ////Function only supports loading in obj files, meshID is used to create the mesh data, file name is the name of the obj file.
@@ -28,7 +31,7 @@ GLuint Mesh::createMesh(GLuint meshID, const char* filename)
 	indexCount = indices.size();
 	meshID = Renderer::createMesh(verts.size() / 3, verts.data(), nullptr, norms.data(), tex_coords.data(), indexCount, indices.data());
 
-	return indexCount;
+	return meshID;
 }
 
 ////Function takes in the model matrix and vec3 position.
@@ -54,7 +57,7 @@ void Mesh::meshRotation(glm::mat4 modelMatrix, GLfloat rotation, glm::vec3 rotat
 	modelMatrix = glm::rotate(modelMatrix, float(rotation * DEG_TO_RADIAN), rotate);
 }
 
-void Mesh::drawMesh(GLuint meshID, GLuint indexCount)
+void Mesh::drawMesh(GLuint meshID)
 {
 	Renderer::drawIndexedMesh(meshID, indexCount, GL_TRIANGLES);
 }

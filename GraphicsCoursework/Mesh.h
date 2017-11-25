@@ -13,9 +13,8 @@ public:
 	void meshTranslation(glm::mat4 modelMatrix, glm::vec3 position);
 	void meshScaling(glm::mat4 modelMatrix, glm::vec3 scale);
 	void meshRotation(glm::mat4 modelMatrix, GLfloat roation, glm::vec3 rotate);
-	void drawMesh(GLuint meshID, GLuint indexCount);
+	void drawMesh(GLuint meshID);
 
 private:
 	GLuint indexCount;
 };
-

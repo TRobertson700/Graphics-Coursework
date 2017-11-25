@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="player.cpp" />
@@ -158,8 +159,11 @@
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABB.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="Collider.h" />
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="Renderer.h" />

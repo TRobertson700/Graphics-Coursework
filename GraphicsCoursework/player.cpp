@@ -1,12 +1,27 @@
 #include "player.h"
 
 
-
-player::player()
+Player::Player()
 {
 }
 
 
-player::~player()
+Player::~Player()
 {
+}
+
+void Player::update()
+{
+
+}
+
+
+void Player::draw()
+{
+
+}
+
+void Player::collision()
+{
+
 }
