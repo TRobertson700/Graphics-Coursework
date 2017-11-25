@@ -10,7 +10,7 @@ public:
 	void update();
 
 private:
-	GLuint model, texture;
+	GLuint model[2], texture;
 	
 };
 

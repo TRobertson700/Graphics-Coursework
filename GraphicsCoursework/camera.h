@@ -12,9 +12,6 @@ public:
 
 	GLfloat rotation = 0.0f;
 
-	glm::vec3 moveForward(glm::vec3 pos, GLfloat angle, GLfloat d);
-	glm::vec3 moveRight(glm::vec3 pos, GLfloat angle, GLfloat d);
-
 private:
 	glm::vec3 eye;
 	glm::vec3 at;
