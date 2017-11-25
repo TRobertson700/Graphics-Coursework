@@ -5,34 +5,13 @@
 #pragma comment(linker, "/subsystem:\"console\" /entry:\"WinMainCRTStartup\"")
 #endif
 
-#include "Renderer.h"
-#include "camera.h"
-#include <stack>
-#include <gtc/matrix_transform.hpp>
-#include <gtc/type_ptr.hpp>
+#include "Scene.h"
 
-
-std::stack<glm::mat4> mvStack;
-
-Renderer::lightStruct light = {
-	{ 0.3f, 0.3f, 0.3f, 1.0f }, // ambient
-	{ 1.0f, 1.0f, 1.0f, 1.0f }, // diffuse
-	{ 1.0f, 1.0f, 1.0f, 1.0f }, // specular
-	{ 10.0f, 10.0f, 10.0f, 1.0f }  // position
-};
-
-glm::vec4 lightPos(-10.0f, 2.0f, 15.0f, 1.0f); //light position
-
-Renderer::materialStruct material = {
-	{ 0.2f, 0.4f, 0.2f, 1.0f }, // ambient
-	{ 0.5f, 1.0f, 0.5f, 1.0f }, // diffuse
-	{ 0.0f, 0.1f, 0.0f, 1.0f }, // specular
-	2.0f  // shininess
-};
+Scene* gameScene;
 
 void init()
 {
-
+	gameScene = new Scene();
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -41,7 +20,7 @@ void init()
 
 void update()
 {
-
+	gameScene->updateScene();
 }
 
 void draw(SDL_Window * window)
@@ -51,6 +30,10 @@ void draw(SDL_Window * window)
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	gameScene->drawScene();
+
+
+	glDepthMask(GL_TRUE);
 
 	SDL_GL_SwapWindow(window); // swap buffers
 }

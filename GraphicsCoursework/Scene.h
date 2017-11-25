@@ -1,5 +1,6 @@
 #pragma once
-#include "player.h"
+#include "Camera.h"
+#include <stack>
 
 class Scene
 {
@@ -10,8 +11,10 @@ public:
 	void drawScene();
 
 private:
-	GLuint cubeMeshID, bunnyMeshID;
+	GLuint cubeMeshID, bunnyMeshID, shaderProgram;
 	Player* player;
-	Mesh meshes[2];
+	Camera* cam;
+	Mesh* meshes[2];
+	std::stack<glm::mat4> mvStack;
 };
 

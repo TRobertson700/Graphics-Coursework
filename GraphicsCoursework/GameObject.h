@@ -9,7 +9,7 @@ public:
 	GameObject() { }
 	virtual ~GameObject() {}
 	virtual void update() = 0;
-	virtual void draw() = 0;
+	virtual glm::mat4 draw(glm::mat4 modelMatrix) = 0;
 
 	virtual glm::vec3 getPosition() = 0;
 	virtual glm::vec3 setPosition(glm::vec3 position) = 0;

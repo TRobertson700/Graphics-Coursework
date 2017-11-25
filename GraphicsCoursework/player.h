@@ -7,15 +7,18 @@ class Player : public GameObject
 public:
 	Player();
 	void update();
-	void draw();
+	glm::mat4 draw(glm::mat4 modelMatrix);
 
 	glm::vec3 getPosition() { return position; }
 	glm::vec3 setPosition(glm::vec3 position) { return this->position = position; }
 
-	glm::mat4 getModelMatrix() { return modelMatrix; }
 
-	Mesh getMesh() { return mesh; }
-	Mesh setMesh(Mesh mesh) { return this->mesh = mesh; }
+	Mesh* getMesh() { return mesh; }
+	Mesh* setMesh(Mesh* mesh) { return this->mesh = mesh; }
+
+	glm::vec3 getEye() { return eye; }
+	glm::vec3 getAt() { return at; }
+	glm::vec3 getUp() { return up; }
 
 	AABB getAABB() { return box; }
 	
@@ -25,9 +28,7 @@ private:
 	glm::vec3 at;
 	glm::vec3 up;
 
-	glm::mat4 modelMatrix;
-
-	Mesh mesh;
+	Mesh* mesh;
 
 	GLfloat rotation;
 	const Uint8 *keys;

@@ -4,24 +4,29 @@
 
 Player::Player()
 {
-	position = glm::vec3(1.0f, 1.2f, -5.0f);
-	eye = glm::vec3(0.0f, 1.0f, 4.0f);
+	position = glm::vec3(5, 1, 4);
+	eye = glm::vec3(0.0f, 1.0f, 10.0f); // left, up, forward
 	at = glm::vec3(0.0f, 1.0f, 3.0f);
 	up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-
-	mesh = Mesh();
+	mesh = new Mesh();
 }
 
 void Player::update()
 {
+	rotation += 0.1f;
 
+	at = position;
+	eye = moveForward(at, rotation, -10.0f);
+	eye.y = position.y + 2;
 }
 
 
-void Player::draw()
+glm::mat4 Player::draw(glm::mat4 modelMatrix)
 {
+	modelMatrix = mesh->meshTranslation(modelMatrix, position);
 
+	return modelMatrix;
 }
 
 

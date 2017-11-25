@@ -11,7 +11,7 @@ void Environment::update()
 }
 
 
-void Environment::draw()
+glm::mat4 Environment::draw(glm::mat4 modelMatrix)
 {
-
+	return modelMatrix;
 }

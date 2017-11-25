@@ -11,7 +11,7 @@ layout(location = 2) in vec3 in_Normal; //location layout qaulifiers
 layout(location = 3) in vec2 in_TexCoord;
 
 
-in  vec3 in_Position;
+layout (location = 0) in vec3 in_Position;
 out vec3 ex_N;
 out vec3 ex_V;
 out vec3 ex_L;

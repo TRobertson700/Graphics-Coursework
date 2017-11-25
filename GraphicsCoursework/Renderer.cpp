@@ -52,7 +52,7 @@ SDL_Window* Renderer::createWindow(SDL_GLContext &context)
 }
 
 	// Something went wrong - print error message and quit
-void  Renderer::exitFatalError(const char *message) {
+void Renderer::exitFatalError(const char *message) {
 	cout << message << " ";
 	exit(1);
 }
@@ -88,7 +88,7 @@ char* Renderer::loadFile(const char *fname, GLint &fSize) {
 
 	// printShaderError
 	// Display (hopefully) useful error messages if shader fails to compile or link
-void  Renderer::printShaderError(const GLint shader) {
+void Renderer::printShaderError(const GLint shader) {
 	int maxLength = 0;
 	int logLength = 0;
 	GLchar *logMessage;
@@ -112,7 +112,7 @@ void  Renderer::printShaderError(const GLint shader) {
 }
 
 
-GLuint  Renderer::initShaders(const char *vertFile, const char *fragFile) {
+GLuint Renderer::initShaders(const char *vertFile, const char *fragFile) {
 	GLuint p, f, v;
 
 	char *vs, *fs;
@@ -167,7 +167,7 @@ GLuint  Renderer::initShaders(const char *vertFile, const char *fragFile) {
 	return p;
 }
 
-GLuint  Renderer::createMesh(const GLuint numVerts, const GLfloat* vertices, const GLfloat* colours,
+GLuint Renderer::createMesh(const GLuint numVerts, const GLfloat* vertices, const GLfloat* colours,
 	const GLfloat* normals, const GLfloat* texcoords, const GLuint indexCount, const GLuint* indices) {
 	GLuint VAO;
 	// generate and set up a VAO for the mesh
@@ -240,36 +240,36 @@ GLuint  Renderer::createMesh(const GLuint numVerts, const GLfloat* vertices, con
 	return VAO;
 }
 
-GLuint  Renderer::createMesh(const GLuint numVerts, const GLfloat* vertices, const GLfloat* colours,
+GLuint Renderer::createMesh(const GLuint numVerts, const GLfloat* vertices, const GLfloat* colours,
 	const GLfloat* normals, const GLfloat* texcoords) {
 	return createMesh(numVerts, vertices, colours, normals, texcoords, 0, nullptr);
 }
 
-GLuint  Renderer::createMesh(const GLuint numVerts, const GLfloat* vertices) {
+GLuint Renderer::createMesh(const GLuint numVerts, const GLfloat* vertices) {
 	return createMesh(numVerts, vertices, nullptr, nullptr, nullptr);
 }
 
-GLuint  Renderer::createColourMesh(const GLuint numVerts, const GLfloat* vertices, const GLfloat* colours) {
+GLuint Renderer::createColourMesh(const GLuint numVerts, const GLfloat* vertices, const GLfloat* colours) {
 	return createMesh(numVerts, vertices, colours, nullptr, nullptr);
 }
 
-void  Renderer::setUniformMatrix4fv(const GLuint program, const char* uniformName, const GLfloat *data) {
+void Renderer::setUniformMatrix4fv(const GLuint program, const char* uniformName, const GLfloat *data) {
 	int uniformIndex = glGetUniformLocation(program, uniformName);
 	glUniformMatrix4fv(uniformIndex, 1, GL_FALSE, data);
 }
 
 
-void  Renderer::setLightPos(const GLuint program, const GLfloat *lightPos) {
+void Renderer::setLightPos(const GLuint program, const GLfloat *lightPos) {
 	int uniformIndex = glGetUniformLocation(program, "lightPosition");
 	glUniform4fv(uniformIndex, 1, lightPos);
 }
 
-void  setProjection(const GLuint program, const GLfloat *data) {
+void setProjection(const GLuint program, const GLfloat *data) {
 	int uniformIndex = glGetUniformLocation(program, "projection");
 	glUniformMatrix4fv(uniformIndex, 1, GL_FALSE, data);
 }
 
-void  Renderer::setLight(const GLuint program, const Renderer::lightStruct light) {
+void Renderer::setLight(const GLuint program, const Renderer::lightStruct light) {
 	// pass in light data to shader
 	int uniformIndex = glGetUniformLocation(program, "light.ambient");
 	glUniform4fv(uniformIndex, 1, light.ambient);
@@ -282,7 +282,7 @@ void  Renderer::setLight(const GLuint program, const Renderer::lightStruct light
 }
 
 
-void  Renderer::setMaterial(const GLuint program, const Renderer::materialStruct material) {
+void Renderer::setMaterial(const GLuint program, const Renderer::materialStruct material) {
 	// pass in material data to shader 
 	int uniformIndex = glGetUniformLocation(program, "material.ambient");
 	glUniform4fv(uniformIndex, 1, material.ambient);
@@ -294,21 +294,21 @@ void  Renderer::setMaterial(const GLuint program, const Renderer::materialStruct
 	glUniform1f(uniformIndex, material.shininess);
 }
 
-void  Renderer::drawMesh(const GLuint mesh, const GLuint numVerts, const GLuint primitive) {
+void Renderer::drawMesh(const GLuint mesh, const GLuint numVerts, const GLuint primitive) {
 	glBindVertexArray(mesh);	// Bind mesh VAO
 	glDrawArrays(primitive, 0, numVerts);	// draw first vertex array object
 	glBindVertexArray(0);
 }
 
 
-void  Renderer::drawIndexedMesh(const GLuint mesh, const GLuint indexCount, const GLuint primitive) {
+void Renderer::drawIndexedMesh(const GLuint mesh, const GLuint indexCount, const GLuint primitive) {
 	glBindVertexArray(mesh);	// Bind mesh VAO
 	glDrawElements(primitive, indexCount, GL_UNSIGNED_INT, 0);	// draw VAO 
 	glBindVertexArray(0);
 }
 
 
-void  Renderer::updateMesh(const GLuint mesh, const unsigned int bufferType, const GLfloat *data, const GLuint size) {
+void Renderer::updateMesh(const GLuint mesh, const unsigned int bufferType, const GLfloat *data, const GLuint size) {
 	GLuint * pMeshBuffers = vertexArrayMap[mesh];
 	glBindVertexArray(mesh);
 
@@ -414,7 +414,7 @@ void addVertex(std::string fString1, std::map<std::string, GLuint> &indexMap,
 
 
 
-void  Renderer::loadObj(const char* filename, std::vector<GLfloat> &verts, std::vector<GLfloat> &norms,
+void Renderer::loadObj(const char* filename, std::vector<GLfloat> &verts, std::vector<GLfloat> &norms,
 	std::vector<GLfloat> &texcoords, std::vector<GLuint> &indices) {
 
 	GLint fileLength;
@@ -511,7 +511,7 @@ void  Renderer::loadObj(const char* filename, std::vector<GLfloat> &verts, std::
 }
 
 
-GLuint  Renderer::loadBitmap(char * name)
+GLuint Renderer::loadBitmap(char * name)
 {
 	GLuint texID;
 	glGenTextures(1, &texID); // generate texture ID

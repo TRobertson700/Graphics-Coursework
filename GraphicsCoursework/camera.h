@@ -1,15 +1,13 @@
 #pragma once
 #include <glm.hpp>
 #include <glew.h>
+#include "player.h"
 
-#define DEG_TO_RADIAN 0.017453293
-
-class camera
+class Camera
 {
 public:
-	camera();
-	~camera();	
+	Camera() {}
 
-
+	glm::mat4 draw(glm::mat4 camView, Player* player);
 };
 
