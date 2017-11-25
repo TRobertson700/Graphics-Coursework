@@ -5,11 +5,10 @@
 class Mesh
 {
 public:
-	Mesh();
-	~Mesh();
-
+	Mesh() {}
 	GLuint createMesh(GLuint meshID, const char* filename);
 	GLuint getIndexCount() { return indexCount; }
+	GLuint getMeshID() { return meshIndex; }
 	void meshTranslation(glm::mat4 modelMatrix, glm::vec3 position);
 	void meshScaling(glm::mat4 modelMatrix, glm::vec3 scale);
 	void meshRotation(glm::mat4 modelMatrix, GLfloat roation, glm::vec3 rotate);
@@ -17,4 +16,5 @@ public:
 
 private:
 	GLuint indexCount;
+	GLuint meshIndex;
 };

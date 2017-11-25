@@ -11,13 +11,8 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
-GLuint shader, toonShader, skyboxShader;
-GLuint indexCount = 0, cubeIndex = 0;
-GLuint rabbit, cube;
-GLuint texture;
 
 std::stack<glm::mat4> mvStack;
-
 
 Renderer::lightStruct light = {
 	{ 0.3f, 0.3f, 0.3f, 1.0f }, // ambient
@@ -37,28 +32,7 @@ Renderer::materialStruct material = {
 
 void init()
 {
-	shader = Renderer::initShaders("phong-tex.vert", "phong-tex.frag");
-	toonShader = Renderer::initShaders("toon.vert", "toon.frag");
-	skyboxShader = Renderer::initShaders("cubeMap.vert", "cubeMap.frag");
 
-	std::vector<GLfloat> verts, norms, texCoords;
-	std::vector<GLuint> indices;
-
-	Renderer::loadObj("bunny-5000.obj", verts, norms, texCoords, indices);
-	GLuint size = indices.size();
-	indexCount =size;
-	rabbit = Renderer::createMesh(verts.size() / 3, verts.data(), nullptr, norms.data(), nullptr, indexCount, indices.data());
-
-	verts.clear();
-	norms.clear();
-	texCoords.clear();
-	indices.clear();
-	Renderer::loadObj("cube.obj", verts, norms, texCoords, indices);
-	size = indices.size();
-	cubeIndex = size;
-	cube = Renderer::createMesh(verts.size() / 3, verts.data(), nullptr, norms.data(), nullptr, cubeIndex, indices.data());
-
-	texture = Renderer::loadBitmap("sky.bmp");
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -77,49 +51,6 @@ void draw(SDL_Window * window)
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glm::mat4 projection(1.0);
-	projection = glm::perspective(float(60.0f*DEG_TO_RADIAN), 800.0f / 600.0f, 1.0f, 150.0f);
-
-	glm::mat4 modelview(1.0); // set base position for scene
-	mvStack.push(modelview);
-
-	glUseProgram(shader);
-	Renderer::setUniformMatrix4fv(shader, "projection", glm::value_ptr(projection));
-
-	glm::vec4 tmp = mvStack.top()*lightPos;
-	light.position[0] = tmp.x;
-	light.position[1] = tmp.y;
-	light.position[2] = tmp.z;
-	Renderer::setLightPos(shader, glm::value_ptr(tmp));
-
-	// draw a cube for ground plane
-	glBindTexture(GL_TEXTURE_2D, texture);
-	mvStack.push(mvStack.top());
-	mvStack.top() = glm::translate(mvStack.top(), glm::vec3(-10.0f, -0.1f, -10.0f));
-	mvStack.top() = glm::scale(mvStack.top(), glm::vec3(20.0f, 0.1f, 20.0f));
-	Renderer::setUniformMatrix4fv(shader, "modelview", glm::value_ptr(mvStack.top()));
-	Renderer::setMaterial(shader, material);
-	Renderer::drawIndexedMesh(cube, cubeIndex, GL_TRIANGLES);
-	mvStack.pop();
-
-	//draws all the toon shaded, alternate toon shaded, and metallic toon shaded bunnies
-	for (int i = 0; i < 7; i++)
-	{
-		glUseProgram(toonShader);
-		Renderer::setLightPos(toonShader, glm::value_ptr(tmp));
-		Renderer::setUniformMatrix4fv(toonShader, "projection", glm::value_ptr(projection));
-		mvStack.push(mvStack.top());
-		mvStack.top() = glm::translate(mvStack.top(), glm::vec3(-25.0f + i + i * 4, -0.8f, 0.0f));
-		mvStack.top() = glm::scale(mvStack.top(), glm::vec3(20.0f, 20.0f, 20.0f));
-		Renderer::setUniformMatrix4fv(toonShader, "modelview", glm::value_ptr(mvStack.top()));
-		Renderer::setMaterial(toonShader, material);
-		Renderer::drawIndexedMesh(rabbit, indexCount, GL_TRIANGLES);
-		mvStack.pop();
-	}
-
-	// remember to use at least one pop operation per push...
-	mvStack.pop(); // initial matrix
-	glDepthMask(GL_TRUE);
 
 	SDL_GL_SwapWindow(window); // swap buffers
 }

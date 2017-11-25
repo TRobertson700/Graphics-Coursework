@@ -10,11 +10,6 @@ public:
 	camera();
 	~camera();	
 
-	GLfloat rotation = 0.0f;
 
-private:
-	glm::vec3 eye;
-	glm::vec3 at;
-	glm::vec3 up;
 };
 

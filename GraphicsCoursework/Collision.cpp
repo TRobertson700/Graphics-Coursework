@@ -1,6 +1,6 @@
 #include "Collision.h"
 #include "GameObject.h"
-#include <windef.h>
+#include <iostream>
 
 bool Collision::ClipLine(GLuint d, const AABB& aabbBox, const glm::vec3& v0, const glm::vec3& v1, GLfloat& f_low, GLfloat& f_high)
 {
@@ -29,8 +29,8 @@ bool Collision::ClipLine(GLuint d, const AABB& aabbBox, const glm::vec3& v0, con
 	if (f_dim_low > f_high)
 		return false;
 
-	f_low = max(f_dim_low, f_low);
-	f_high = min(f_dim_high, f_high);
+	f_low = std::fmax(f_dim_low, f_low);
+	f_high = std::fmin(f_dim_high, f_high);
 
 	if (f_low > f_high)
 		return false;
@@ -114,5 +114,5 @@ bool Collision::CollsionTestAgainstPlane(Collider* objA, Collider* objB)
 //reaction against a box
 bool Collision::CollsionTestAgainstBox(Collider* objA, Collider* objB)
 {
-
+	return false;
 }

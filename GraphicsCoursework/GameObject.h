@@ -16,12 +16,3 @@ public:
 
 	virtual AABB getAABB() = 0;
 };
-
-
-class MeshObjects
-{
-public:
-
-private:
-
-};

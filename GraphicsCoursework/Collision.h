@@ -1,7 +1,7 @@
 #pragma once
 #include "Collider.h"
 #include "AABB.h"
-
+#include "glew.h"
 
 class Collision
 {
