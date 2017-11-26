@@ -13,8 +13,8 @@ public:
 	glm::vec3 setPosition(glm::vec3 position) { return this->position = position; }
 
 
-	Mesh* getMesh() { return mesh; }
-	Mesh* setMesh(Mesh* mesh) { return this->mesh = mesh; }
+	Mesh getMesh() { return mesh; }
+	Mesh setMesh(Mesh mesh) { return this->mesh = mesh; }
 
 	glm::vec3 getEye() { return eye; }
 	glm::vec3 getAt() { return at; }
@@ -28,7 +28,7 @@ private:
 	glm::vec3 at;
 	glm::vec3 up;
 
-	Mesh* mesh;
+	Mesh mesh;
 
 	GLfloat rotation;
 	const Uint8 *keys;

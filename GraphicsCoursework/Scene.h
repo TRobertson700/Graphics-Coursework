@@ -13,9 +13,9 @@ public:
 
 private:
 	GLuint cubeMeshID, bunnyMeshID, shaderProgram;
-	Player* player;
+	GameObject* player;
 	Camera* cam;
-	Mesh* meshes[2];
+	Mesh meshes[2];
 	Shader* shader;
 	std::stack<glm::mat4> mvStack;
 };

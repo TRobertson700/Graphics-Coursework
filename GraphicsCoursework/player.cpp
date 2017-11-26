@@ -9,7 +9,8 @@ Player::Player()
 	at = glm::vec3(0.0f, 1.0f, 3.0f);
 	up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	mesh = new Mesh();
+	mesh = Mesh();
+
 }
 
 void Player::update()
@@ -24,7 +25,8 @@ void Player::update()
 
 glm::mat4 Player::draw(glm::mat4 modelMatrix)
 {
-	modelMatrix = mesh->meshTranslation(modelMatrix, position);
+	modelMatrix = mesh.meshTranslation(modelMatrix, position);
+	modelMatrix = mesh.meshScaling(modelMatrix, glm::vec3(10, 10, 10));
 
 	return modelMatrix;
 }

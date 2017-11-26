@@ -91,7 +91,7 @@ bool Collision::AABBIntersection(const AABB& a, const AABB& b)
 
 
 //reaction against a plane
-bool Collision::CollsionTestAgainstPlane(Collider* objA, Collider* objB)
+bool Collision::CollsionTestAgainstPlane(Collider* objA, Collider* plane)
 {
 	GLfloat fFraction = 1;
 
@@ -99,7 +99,7 @@ bool Collision::CollsionTestAgainstPlane(Collider* objA, Collider* objB)
 	glm::vec3 vEnd = dynamic_cast<GameObject*>(objA)->getPosition() + glm::vec3(0, 1, 0);
 
 	glm::vec3 testIntersection;
-	if (lineAABBIntersection(dynamic_cast<GameObject*>(objB)->getAABB() + dynamic_cast<GameObject*>(objB)->getPosition(), vBegin, vEnd, testIntersection, 0))
+	if (lineAABBIntersection(dynamic_cast<GameObject*>(plane)->getAABB() + dynamic_cast<GameObject*>(plane)->getPosition(), vBegin, vEnd, testIntersection, 0))
 	{
 		dynamic_cast<GameObject*>(objA)->setPosition(glm::vec3(dynamic_cast<GameObject*>(objA)->getPosition().x, dynamic_cast<GameObject*>(objA)->getPosition().y, dynamic_cast<GameObject*>(objA)->getPosition().z));
 		return true;

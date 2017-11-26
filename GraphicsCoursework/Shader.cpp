@@ -17,14 +17,14 @@ GLuint Shader::setAttenuation(GLuint program, GLfloat attconst, GLfloat attlinea
 	return uniformIndex;
 }
 
-//bind shader program
+//bind shader program, updates the current program, call before setting uniform matrices
 void Shader::bindShaderProgram(GLuint program)
 {
 	currentProgram = program;
 	glUseProgram(currentProgram);
 }
 
-//unbind shader program
+//unbind shader program, call when you before you use another shader.
 void Shader::unbindShaderProgram()
 {
 	currentProgram = 0;
