@@ -1,5 +1,6 @@
 #pragma once
 #include "Camera.h"
+#include "Shader.h"
 #include <stack>
 
 class Scene
@@ -15,6 +16,7 @@ private:
 	Player* player;
 	Camera* cam;
 	Mesh* meshes[2];
+	Shader* shader;
 	std::stack<glm::mat4> mvStack;
 };
 

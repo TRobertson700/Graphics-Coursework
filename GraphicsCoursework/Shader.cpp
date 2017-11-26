@@ -1,12 +1,46 @@
 #include "Shader.h"
+#include "Renderer.h"
+#include "gtc\type_ptr.hpp"
 
 
-Shader::Shader()
+//// when creating the uniform float for the attenuation in the fragment file, make sure they are labeled the same
+//// as the strings below in the glGetUniformLocation function.
+GLuint Shader::setAttenuation(GLuint program, GLfloat attconst, GLfloat attlinear, GLfloat attquadratic)
 {
+	GLuint uniformIndex = glGetUniformLocation(program, "attConst");
+	glUniform1f(uniformIndex, attconst);
+	uniformIndex = glGetUniformLocation(program, "attLinear");
+	glUniform1f(uniformIndex, attlinear);
+	uniformIndex = glGetUniformLocation(program, "attQuadratic");
+	glUniform1f(uniformIndex, attquadratic);
+
+	return uniformIndex;
 }
 
-
-Shader::~Shader()
+//bind shader program
+void Shader::bindShaderProgram(GLuint program)
 {
-	delete this;
+	currentProgram = program;
+	glUseProgram(currentProgram);
+}
+
+//unbind shader program
+void Shader::unbindShaderProgram()
+{
+	currentProgram = 0;
+	glUseProgram(currentProgram);
+}
+
+////Sets up mat4 uniform matrix
+void Shader::useMatrix4fv(glm::mat4 matrix, const char* uniform)
+{
+	Renderer::setUniformMatrix4fv(currentProgram, uniform, glm::value_ptr(matrix));
+}
+
+////Sets up mat3 uniform matrix
+void Shader::useMatrix3fv(glm::mat3 matrix, const char* uniform)
+{
+	GLuint uniformIndex = glGetUniformLocation(currentProgram, uniform);
+	auto data = glm::value_ptr(matrix);
+	glUniformMatrix3fv(uniformIndex, 1, GL_FALSE, data);
 }

@@ -31,17 +31,15 @@ Scene::Scene()
 	cam = new Camera();
 	meshes[0] = new Mesh();
 	meshes[1] = new Mesh();
+	shader = new Shader();
 
 	shaderProgram = Renderer::initShaders("phong-tex.vert", "phong-tex.frag");
 	Renderer::setLight(shaderProgram, light);
 	Renderer::setMaterial(shaderProgram, material);
+
 	// set light attenuation shader uniforms
-	GLuint uniformIndex = glGetUniformLocation(shaderProgram, "attConst");
-	glUniform1f(uniformIndex, attConstant);
-	uniformIndex = glGetUniformLocation(shaderProgram, "attLinear");
-	glUniform1f(uniformIndex, attLinear);
-	uniformIndex = glGetUniformLocation(shaderProgram, "attQuadratic");
-	glUniform1f(uniformIndex, attQuadratic);
+	shader->setAttenuation(shaderProgram, attConstant, attLinear, attQuadratic);
+
 
 	meshes[0]->createMesh(cubeMeshID, "cube.obj");
 	meshes[1]->createMesh(bunnyMeshID, "bunny-5000.obj");
@@ -66,14 +64,14 @@ void Scene::drawScene()
 	light.position[1] = tmp.y;
 	light.position[2] = tmp.z;
 
-	glUseProgram(shaderProgram);
+	shader->bindShaderProgram(shaderProgram);
 	mvStack.push(mvStack.top());
-	Renderer::setUniformMatrix4fv(shaderProgram, "projection", glm::value_ptr(projection));
+	shader->useMatrix4fv(projection, "projection");
 	Renderer::setLightPos(shaderProgram, glm::value_ptr(tmp));
 
 	mvStack.top() = player->draw(mvStack.top());
 
-	Renderer::setUniformMatrix4fv(shaderProgram, "modelview", glm::value_ptr(mvStack.top()));
+	shader->useMatrix4fv(mvStack.top(), "modelview");
 	player->getMesh()->drawMesh(player->getMesh()->getMeshID());
 	mvStack.pop();
 
