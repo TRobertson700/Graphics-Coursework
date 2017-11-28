@@ -67,20 +67,22 @@ void main(void) {
 	litColour=min(litColour+amb, cellColour); //applies the chosen colour passed in with the "setColour" command
 	vec4 shade1 = smoothstep(vec4(0.2f), vec4(0.21f), litColour);
 	vec4 shade2 = smoothstep(vec4(0.4f), vec4(0.41f), litColour);
-	vec4 shade3 = smoothstep(vec4(0.8f), vec4(0.81f), litColour);
+	vec4 shade3 = smoothstep(vec4(0.6f), vec4(0.61f), litColour);
+	vec4 shade4 = smoothstep(vec4(0.8f), vec4(0.81f), litColour);
 	
 	float metallic = dot(ex_N, ex_V);
 	metallic = smoothstep(0.4,0.6,metallic);
 	metallic = metallic/2 + 1.0;
 	
-	vec4 colour = 	max( max(0.3*shade1,0.5*shade2), shade3  );
+	vec4 colourA = 	max( max( max(0.3*shade1,0.5*shade2), 0.7*shade3), shade4 );
 
 	if ( abs(dot(ex_N,ex_V)) < 0.5)
 	{
-		colour = vec4(vec3(0.0f, 0.0f, 0.0f),1.0);
+		colourA = vec4(vec3(0.0),1.0);
 	}
 
 
 
-	out_Color = colour * metallic;
+	out_Color.rgb = colourA.rgb * metallic;
+	out_Color.a = 1.0;
 }

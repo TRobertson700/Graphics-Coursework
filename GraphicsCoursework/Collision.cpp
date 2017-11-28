@@ -111,8 +111,63 @@ bool Collision::CollsionTestAgainstPlane(Collider* objA, Collider* plane)
 }
 
 
-//reaction against a box
+//reaction against a box, brute force approach
 bool Collision::CollsionTestAgainstBox(Collider* objA, Collider* objB)
 {
+	if (AABBIntersection(dynamic_cast<GameObject*>(objA)->getAABB() + dynamic_cast<GameObject*>(objA)->getPosition(), dynamic_cast<GameObject*>(objB)->getAABB() + dynamic_cast<GameObject*>(objB)->getPosition())) {
+
+		if ((dynamic_cast<GameObject*>(objA)->getAABB().vecMin.x + objA->getPosition().x) >  // colliding against face
+			(dynamic_cast<GameObject*>(objB)->getAABB().vecMin.x + objB->getPosition().x) &&
+			(dynamic_cast<GameObject*>(objA)->getAABB().vecMax.x + objA->getPosition().x) <
+			(dynamic_cast<GameObject*>(objB)->getAABB().vecMax.x + objB->getPosition().x)) {
+			if ((dynamic_cast<GameObject*>(objA)->getAABB().vecMax.z + objA->getPosition().z) < //determines which side of face player is on
+				(dynamic_cast<GameObject*>(objB)->getAABB().vecMax.z + objB->getPosition().z)) {
+				objA->setPosition(glm::vec3(objA->getPosition().x, objA->getPosition().y, objA->getPosition().z - 0.1f));
+			}
+			else if ((dynamic_cast<GameObject*>(objA)->getAABB().vecMin.z + objA->getPosition().z) > //determines which side of face player is on
+				(dynamic_cast<GameObject*>(objB)->getAABB().vecMin.z + objB->getPosition().z)) {
+				objA->setPosition(glm::vec3(objA->getPosition().x, objA->getPosition().y, objA->getPosition().z + 0.1f));
+			}
+		}
+		else if ((dynamic_cast<GameObject*>(objA)->getAABB().vecMin.z + objA->getPosition().z) > //colliding against face
+			(dynamic_cast<GameObject*>(objB)->getAABB().vecMin.z + objB->getPosition().z) &&
+			(dynamic_cast<GameObject*>(objA)->getAABB().vecMax.z + objA->getPosition().z) <
+			(dynamic_cast<GameObject*>(objB)->getAABB().vecMax.z + objB->getPosition().z)) {
+			if (dynamic_cast<GameObject*>(objA)->getAABB().vecMax.x + objA->getPosition().x <	//determines which side of face player is on
+				dynamic_cast<GameObject*>(objB)->getAABB().vecMax.x + objB->getPosition().x) {
+				dynamic_cast<GameObject*>(objA)->setPosition(glm::vec3(objA->getPosition().x - 0.1f, objA->getPosition().y, objA->getPosition().z));
+			}
+			else if (dynamic_cast<GameObject*>(objA)->getAABB().vecMin.x + objA->getPosition().x > //determines which side of face player is on
+				dynamic_cast<GameObject*>(objB)->getAABB().vecMin.x + objB->getPosition().x) {
+				objA->setPosition(glm::vec3(objA->getPosition().x + 0.1f, objA->getPosition().y, objA->getPosition().z));
+			}
+		}
+		else if ((dynamic_cast<GameObject*>(objA)->getAABB().vecMax.x + objA->getPosition().x) > //colliding against corners
+			(dynamic_cast<GameObject*>(objB)->getAABB().vecMin.x + objB->getPosition().x) &&
+			(dynamic_cast<GameObject*>(objA)->getAABB().vecMax.z + objA->getPosition().z) >
+			(dynamic_cast<GameObject*>(objB)->getAABB().vecMax.z + objB->getPosition().z)) {
+			objA->setPosition(glm::vec3(objA->getPosition().x - 0.1f, objA->getPosition().y, objA->getPosition().z + 0.1f));
+		}
+		else if ((dynamic_cast<GameObject*>(objA)->getAABB().vecMax.x + objA->getPosition().x) > //colliding against corners
+			(dynamic_cast<GameObject*>(objB)->getAABB().vecMin.x + objB->getPosition().x) &&
+			(dynamic_cast<GameObject*>(objA)->getAABB().vecMin.z + objA->getPosition().z) <
+			(dynamic_cast<GameObject*>(objB)->getAABB().vecMax.z + objB->getPosition().z)) {
+			objA->setPosition(glm::vec3(objA->getPosition().x - 0.1f, objA->getPosition().y, objA->getPosition().z - 0.1f));
+		}
+		else if ((dynamic_cast<GameObject*>(objA)->getAABB().vecMin.x + objA->getPosition().x) < //colliding against corners
+			(dynamic_cast<GameObject*>(objB)->getAABB().vecMax.x + objB->getPosition().x) &&
+			(dynamic_cast<GameObject*>(objA)->getAABB().vecMax.z + objA->getPosition().z) >
+			(dynamic_cast<GameObject*>(objB)->getAABB().vecMax.z + objB->getPosition().z)) {
+			objA->setPosition(glm::vec3(objA->getPosition().x + 0.1f, objA->getPosition().y, objA->getPosition().z + 0.1f));
+		}
+		else if ((dynamic_cast<GameObject*>(objA)->getAABB().vecMin.x + objA->getPosition().x) < //colliding against corners
+			(dynamic_cast<GameObject*>(objB)->getAABB().vecMax.x + objB->getPosition().x) &&
+			(dynamic_cast<GameObject*>(objA)->getAABB().vecMin.z + objA->getPosition().z) <
+			(dynamic_cast<GameObject*>(objB)->getAABB().vecMax.z + objB->getPosition().z)) {
+			objA->setPosition(glm::vec3(objA->getPosition().x + 0.1f, objA->getPosition().y, objA->getPosition().z - 0.1f));
+		}
+
+		return true;
+	}
 	return false;
 }

@@ -4,22 +4,35 @@
 
 Player::Player()
 {
-	position = glm::vec3(5, 1, 4);
+	position = glm::vec3(5, 10, 4);
 	eye = glm::vec3(0.0f, 1.0f, 10.0f); // left, up, forward
 	at = glm::vec3(0.0f, 1.0f, 3.0f);
 	up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	mesh = Mesh();
+	box.vecMin = glm::vec3(-1, -1, -1);
+	box.vecMax = glm::vec3(0.5, 0.5, 0.5);
 
+	mesh = Mesh();
+}
+
+void Player::MouseMotion(GLuint x, GLuint y)
+{
+	//if (fov > 10) fov = 10;
+	//else if (fov < 2) fov = 2;
+
+	//if (mouse & SDL_BUTTON(SDL_BUTTON_LEFT)) fov += 0.05f;
+	//if (mouse & SDL_BUTTON(SDL_BUTTON_RIGHT)) fov -= 0.05f;
+
+	rotation = x;
 }
 
 void Player::update()
 {
-	rotation += 0.1f;
-
 	at = position;
 	eye = moveForward(at, rotation, -10.0f);
 	eye.y = position.y + 2;
+
+	inputHandler();
 }
 
 
@@ -27,7 +40,7 @@ glm::mat4 Player::draw(glm::mat4 modelMatrix)
 {
 	modelMatrix = mesh.meshTranslation(modelMatrix, position);
 	modelMatrix = mesh.meshScaling(modelMatrix, glm::vec3(10, 10, 10));
-
+	modelMatrix = mesh.meshRotation(modelMatrix, -90, glm::vec3(0, 1, 0));
 	return modelMatrix;
 }
 
@@ -56,9 +69,13 @@ glm::vec3 Player::moveToSide(glm::vec3 pos, GLfloat angle, GLfloat d)
 
 void Player::inputHandler()
 {
+	int x, y;
+	mouse = SDL_GetMouseState(&x, &y);
 	keys = SDL_GetKeyboardState(NULL);
 	if (keys[SDL_SCANCODE_W]) position = moveForward(position, rotation, 0.1f);
 	if (keys[SDL_SCANCODE_S]) position = moveForward(position, rotation, -0.1f);
 	if (keys[SDL_SCANCODE_A]) position = moveToSide(position, rotation, -0.1f);
 	if (keys[SDL_SCANCODE_D]) position = moveToSide(position, rotation, 0.1f);
+
+	MouseMotion(x, y);
 }

@@ -26,6 +26,8 @@ GLfloat attLinear = 0.0f;
 GLfloat attQuadratic = 0.0f;
 GLuint texture;
 
+GLfloat toonColour[4] = { 1.0, 0.2, 0.6, 1.0 };
+
 Scene::Scene()
 {
 	player = new Player();
@@ -33,19 +35,34 @@ Scene::Scene()
 	meshes[0] =  Mesh();
 	meshes[1] =  Mesh();
 	shader = new Shader();
+	ground = new Environment(glm::vec3(0, 0, 0), glm::vec3(25.0, 0.5, 25.0), 0, glm::vec3(0, 0, 1));
+	wall = new Environment(glm::vec3(10, 5, 0), glm::vec3(1, 10, 10), 0, glm::vec3(0, 0, 1));
+	collision = Collision();
 
-	shaderProgram = Renderer::initShaders("toon.vert", "toon.frag");
-	Renderer::setLight(shaderProgram, light);
-	Renderer::setMaterial(shaderProgram, material);
+
+
+
+	tProgram = Renderer::initShaders("toon.vert", "toon.frag");
+	Renderer::setLight(tProgram, light);
+	Renderer::setMaterial(tProgram, material);
+	GLuint uniformIndex = glGetUniformLocation(tProgram, "colour.colour");
+	glUniform4fv(uniformIndex, 1, toonColour);
 	// set light attenuation shader uniforms
-	shader->setAttenuation(shaderProgram, attConstant, attLinear, attQuadratic);
+	shader->setAttenuation(tProgram, attConstant, attLinear, attQuadratic);
 
+	pProgram = Renderer::initShaders("phong-tex.vert", "phong-tex.frag");
+	Renderer::setLight(pProgram, light);
+	Renderer::setMaterial(pProgram, material);
+	// set light attenuation shader uniforms
+	shader->setAttenuation(pProgram, attConstant, attLinear, attQuadratic);
 
 	meshes[0].createMesh(cubeMeshID, "cube.obj");
 	texture = Renderer::loadBitmap("sky.bmp");
 	meshes[1].createMesh(bunnyMeshID, "bunny-5000.obj");
 
 	dynamic_cast<Player*>(player)->setMesh(meshes[1]);
+	dynamic_cast<Environment*>(ground)->setMesh(meshes[0]);
+	dynamic_cast<Environment*>(wall)->setMesh(meshes[0]);
 
 }
 
@@ -65,25 +82,51 @@ void Scene::drawScene()
 	light.position[1] = tmp.y;
 	light.position[2] = tmp.z;
 
-	shader->bindShaderProgram(shaderProgram);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	shader->bindShaderProgram(tProgram);
 	mvStack.push(mvStack.top());
 	shader->useMatrix4fv(projection, "projection");
-	Renderer::setLightPos(shaderProgram, glm::value_ptr(tmp));
-
 	mvStack.top() = player->draw(mvStack.top());
-
 	shader->useMatrix4fv(mvStack.top(), "modelview");
+	Renderer::setLightPos(tProgram, glm::value_ptr(tmp));
+	shader->useMatrix3fv(glm::transpose(glm::inverse(glm::mat3(mvStack.top()))), "normalmatrix");
 	dynamic_cast<Player*>(player)->getMesh().drawMesh(dynamic_cast<Player*>(player)->getMesh().getMeshID());
 	mvStack.pop();
-
 	shader->unbindShaderProgram();
 
+
+	shader->bindShaderProgram(pProgram);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	shader->useMatrix4fv(projection, "projection");
+	mvStack.push(mvStack.top());
+	mvStack.top() = ground->draw(mvStack.top());
+	shader->useMatrix4fv(mvStack.top(), "modelview");
+	Renderer::setLightPos(pProgram, glm::value_ptr(tmp));
+	dynamic_cast<Environment*>(ground)->getMesh().drawMesh(dynamic_cast<Environment*>(ground)->getMesh().getMeshID());
 	mvStack.pop();
+
+	//wall
+	mvStack.push(mvStack.top());
+	shader->useMatrix4fv(projection, "projection");
+	mvStack.top() = wall->draw(mvStack.top());
+	shader->useMatrix4fv(mvStack.top(), "modelview");
+	Renderer::setLightPos(pProgram, glm::value_ptr(tmp));
+	shader->useMatrix3fv(glm::transpose(glm::inverse(glm::mat3(mvStack.top()))), "normalmatrix");
+	dynamic_cast<Environment*>(wall)->getMesh().drawMesh(dynamic_cast<Environment*>(wall)->getMesh().getMeshID());
+	mvStack.pop();
+	shader->unbindShaderProgram();
+
+
+	mvStack.pop(); //initial matrix
 }
 
 
 void Scene::updateScene()
 {
 	player->update();
+	collision.CollsionTestAgainstPlane(player, ground);
+	collision.CollsionTestAgainstBox(player, wall);
+	const Uint8* keys = SDL_GetKeyboardState(NULL);
+
+
+	
 }

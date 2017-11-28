@@ -32,9 +32,11 @@ private:
 
 	GLfloat rotation;
 	const Uint8 *keys;
+	GLuint mouse;
 	AABB box;
 
 	glm::vec3 moveForward(glm::vec3 pos, GLfloat angle, GLfloat d);
 	glm::vec3 moveToSide(glm::vec3 pos, GLfloat angle, GLfloat d);
 	void inputHandler();
+	void MouseMotion(GLuint x, GLuint y);
 };
