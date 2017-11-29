@@ -20,10 +20,12 @@ public:
 	glm::vec3 getAt() { return at; }
 	glm::vec3 getUp() { return up; }
 
+	bool setOnground(bool onground) { return this->onground = onground; }
+
 	AABB getAABB() { return box; }
 	
 private:
-	glm::vec3 position;
+	glm::vec3 position, velocity;
 	glm::vec3 eye;
 	glm::vec3 at;
 	glm::vec3 up;
@@ -33,6 +35,7 @@ private:
 	GLfloat rotation;
 	const Uint8 *keys;
 	GLuint mouse;
+	bool onground = false;
 	AABB box;
 
 	glm::vec3 moveForward(glm::vec3 pos, GLfloat angle, GLfloat d);

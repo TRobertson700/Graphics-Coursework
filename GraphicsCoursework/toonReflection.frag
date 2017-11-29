@@ -19,19 +19,18 @@ struct materialStruct
 	float shininess;
 };
 
-struct colourStruct
-{
-	vec4 colour;
-};
 
 uniform lightStruct light;
 uniform materialStruct material;
-uniform colourStruct colour;
 uniform sampler2D textureUnit0;
+uniform samplerCube textureUnit1;
 
 uniform float attConst;
 uniform float attLinear;
 uniform float attQuadratic;
+
+in vec3 ex_WorldNorm;
+in vec3 ex_WorldView;
 
 in float ex_D;
 in vec3 ex_N;
@@ -64,16 +63,14 @@ void main(void) {
 	vec4 litColour = vec4(tmp_Color.rgb *attenuation, tmp_Color.a);
 	vec4 amb=min(ambientI,vec4(1.0f));
 
-	vec4 cellColour = colour.colour;
 
-	litColour=min(litColour+amb, cellColour); //applies the chosen colour passed in with the "setColour" command
 	vec4 shade1 = smoothstep(vec4(0.2f), vec4(0.21f), litColour);
 	vec4 shade2 = smoothstep(vec4(0.4f), vec4(0.41f), litColour);
 	vec4 shade3 = smoothstep(vec4(0.8f), vec4(0.81f), litColour);
 	
 	float metallic = dot(ex_N, ex_V);
 	metallic = smoothstep(0.4,0.6,metallic);
-	metallic = metallic/2 + 0.5;
+	metallic = metallic/2 + 0.75;
 	
 	vec4 colourA = max( max(0.3*shade1,0.5*shade2), shade3);
 
@@ -83,8 +80,10 @@ void main(void) {
 	}
 
 	vec3 texColor = texture(textureUnit0, ex_TexCoord).rgb;
+	vec3 reflectTexCoord = reflect(-ex_WorldView, normalize(ex_WorldNorm));
 
-	vec4 texel = colourA * metallic * vec4(texColor, 1.0);
+	//vec4 texel = colourA * metallic * vec4(texColor, 1.0);
+	vec4 texel = min(colourA * metallic * vec4(texColor, 1.0) * texture(textureUnit1, reflectTexCoord), vec4(1.0f));
 
 	out_Color.rgb = texel.rgb;
 	out_Color.a = 1.0;

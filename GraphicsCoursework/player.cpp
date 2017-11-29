@@ -39,8 +39,8 @@ void Player::update()
 glm::mat4 Player::draw(glm::mat4 modelMatrix)
 {
 	modelMatrix = mesh.meshTranslation(modelMatrix, position);
-	modelMatrix = mesh.meshScaling(modelMatrix, glm::vec3(10, 10, 10));
-	modelMatrix = mesh.meshRotation(modelMatrix, -90, glm::vec3(0, 1, 0));
+	modelMatrix = mesh.meshScaling(modelMatrix, glm::vec3(20, 20, 20));
+	modelMatrix = mesh.meshRotation(modelMatrix, -90 + rotation, glm::vec3(0, 1, 0));
 	return modelMatrix;
 }
 
@@ -70,9 +70,14 @@ glm::vec3 Player::moveToSide(glm::vec3 pos, GLfloat angle, GLfloat d)
 void Player::inputHandler()
 {
 	int x, y;
+	position += velocity;
+	velocity *= 0.89f;
 	mouse = SDL_GetMouseState(&x, &y);
 	keys = SDL_GetKeyboardState(NULL);
-	if (keys[SDL_SCANCODE_W]) position = moveForward(position, rotation, 0.1f);
+	if (keys[SDL_SCANCODE_W] && onground) {
+		position = moveForward(position, rotation, 0.1f);
+		//velocity.y += 0.5;
+	}
 	if (keys[SDL_SCANCODE_S]) position = moveForward(position, rotation, -0.1f);
 	if (keys[SDL_SCANCODE_A]) position = moveToSide(position, rotation, -0.1f);
 	if (keys[SDL_SCANCODE_D]) position = moveToSide(position, rotation, 0.1f);

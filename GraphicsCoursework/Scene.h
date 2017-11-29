@@ -14,7 +14,12 @@ public:
 	void drawScene();
 
 private:
-	GLuint cubeMeshID, bunnyMeshID, tProgram, pProgram;
+	GLuint loadCubeMap(const char *fname[6], GLuint *texID);
+
+	GLuint cubeMeshID, bunnyMeshID, skyProgram;
+	GLuint program[3];
+	GLuint currProgram;
+	GLuint skybox[5];
 	GameObject* player;
 	GameObject* ground;
 	GameObject* wall;
@@ -23,5 +28,7 @@ private:
 	Shader* shader;
 	std::stack<glm::mat4> mvStack;
 	Collision collision;
+
+
 };
 

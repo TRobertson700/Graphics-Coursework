@@ -180,6 +180,8 @@
     <None Include="phong-tex.vert" />
     <None Include="toon.frag" />
     <None Include="toon.vert" />
+    <None Include="toonReflection.frag" />
+    <None Include="toonReflection.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,8 +2,10 @@
 #version 330
 
 uniform mat4 modelview;
+uniform mat4 modelMatrix;
 uniform mat4 projection;
 uniform vec4 lightPosition;
+uniform vec3 cameraPos;
 
 layout(location = 3) in vec2 in_TexCoord;
 
@@ -14,6 +16,8 @@ out vec3 ex_V;
 out vec3 ex_L;
 out float ex_D;
 
+out vec3 ex_WorldNorm;
+out vec3 ex_WorldView;
 out vec2 ex_TexCoord;
 
 // multiply each vertex position by the MVP matrix
@@ -38,7 +42,12 @@ void main(void) {
 	// L - to light source from vertex
 	ex_L = normalize(lightPosition.xyz - vertexPosition.xyz);
 
+	vec3 worldPos = (modelMatrix * vec4(in_Position, 1.0)).xyz;
+	mat3 normalWorldMatrix = transpose(inverse(mat3(modelMatrix)));
+
+	ex_WorldNorm = normalWorldMatrix * in_Normal;
+	ex_WorldView = cameraPos - worldPos;
+
 	ex_TexCoord = in_TexCoord;
     gl_Position = projection * vertexPosition;
-
 }

@@ -97,5 +97,11 @@
     <None Include="toon.frag">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="toonReflection.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="toonReflection.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
