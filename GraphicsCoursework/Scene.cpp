@@ -42,8 +42,15 @@ Scene::Scene()
 	meshes[0] =  Mesh();
 	meshes[1] =  Mesh();
 	shader = new Shader();
-	ground = new Environment(glm::vec3(0, -1, 0), glm::vec3(25.0, 0.5, 25.0), 0, glm::vec3(0, 1, 0));
-	wall = new Environment(glm::vec3(10, 5, 0), glm::vec3(1, 10, 10), 0, glm::vec3(0, 0, 1));
+	ground = new Environment(glm::vec3(0, -1, 0), glm::vec3(100.0, 0.5, 100.0), 0, glm::vec3(0, 1, 0));
+
+	//draws the walls
+	wall = new Environment(glm::vec3(-101, 5, 0), glm::vec3(1, 10, 102), 0, glm::vec3(0, 0, 1));
+	wall2 = new Environment(glm::vec3(100, 5, 0), glm::vec3(1, 10, 102), 0, glm::vec3(0, 0, 1));
+	wall3 = new Environment(glm::vec3(0, 5, -101), glm::vec3(102, 10, 1), 0, glm::vec3(0, 0, 1));
+	wall4 = new Environment(glm::vec3(0, 5, 101), glm::vec3(102, 10, 1), 0, glm::vec3(0, 0, 1));
+
+
 	box = new Environment(glm::vec3(0, 5, 0), glm::vec3(2, 2, 2), 0, glm::vec3(0, 0, 1));
 	collision = Collision();
 
@@ -144,7 +151,7 @@ GLuint Scene::loadCubeMap(const char *fname[6], GLuint *texID)
 void Scene::drawScene()
 {
 	glm::mat4 projection(1.0);
-	projection = glm::perspective(float(60.0f * DEG_TO_RADIAN), 800.0f / 600.0f, 1.0f, 150.0f);
+	projection = glm::perspective(float(60.0f * DEG_TO_RADIAN), 800.0f / 600.0f, 1.0f, 300.0f);
 
 
 	glm::mat4 modelview(1.0);
@@ -201,7 +208,7 @@ void Scene::drawScene()
 
 	//ground
 	shader->bindShaderProgram(program[1]);
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
+	glBindTexture(GL_TEXTURE_2D, texture[3]);
 	shader->useMatrix4fv(projection, "projection");
 	mvStack.push(mvStack.top());
 	mvStack.top() = ground->draw(mvStack.top());
@@ -212,11 +219,37 @@ void Scene::drawScene()
 
 	//wall
 	mvStack.push(mvStack.top());
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	mvStack.top() = wall->draw(mvStack.top());
 	shader->useMatrix4fv(mvStack.top(), "modelview");
 	Renderer::setLightPos(program[1], glm::value_ptr(tmp));
 	wall->getMesh().drawMesh(wall->getMesh().getMeshID());
 	mvStack.pop();
+
+	//wall 2
+	mvStack.push(mvStack.top());
+	mvStack.top() = wall2->draw(mvStack.top());
+	shader->useMatrix4fv(mvStack.top(), "modelview");
+	Renderer::setLightPos(program[1], glm::value_ptr(tmp));
+	wall->getMesh().drawMesh(wall->getMesh().getMeshID());
+	mvStack.pop();
+
+	//wall 3
+	mvStack.push(mvStack.top());
+	mvStack.top() = wall3->draw(mvStack.top());
+	shader->useMatrix4fv(mvStack.top(), "modelview");
+	Renderer::setLightPos(program[1], glm::value_ptr(tmp));
+	wall->getMesh().drawMesh(wall->getMesh().getMeshID());
+	mvStack.pop();
+
+	//wall 4
+	mvStack.push(mvStack.top());
+	mvStack.top() = wall4->draw(mvStack.top());
+	shader->useMatrix4fv(mvStack.top(), "modelview");
+	Renderer::setLightPos(program[1], glm::value_ptr(tmp));
+	wall->getMesh().drawMesh(wall->getMesh().getMeshID());
+	mvStack.pop();
+
 	shader->unbindShaderProgram();
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -253,6 +286,9 @@ void Scene::updateScene()
 	player->update();
 	dynamic_cast<Player*>(player)->setOnground(collision.CollsionTestAgainstPlane(player, ground));
 	collision.CollsionTestAgainstBox(player, wall);
+	collision.CollsionTestAgainstBox(player, wall2);
+	collision.CollsionTestAgainstBox(player, wall3);
+	collision.CollsionTestAgainstBox(player, wall4);
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
 
 

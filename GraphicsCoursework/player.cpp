@@ -22,8 +22,10 @@ void Player::MouseMotion(GLuint x, GLuint y)
 
 	//if (mouse & SDL_BUTTON(SDL_BUTTON_LEFT)) fov += 0.05f;
 	//if (mouse & SDL_BUTTON(SDL_BUTTON_RIGHT)) fov -= 0.05f;
-
-	rotation = x;
+	if (mouse & SDL_BUTTON(SDL_BUTTON_LEFT))
+	{
+		rotation = x;
+	}
 }
 
 void Player::update()

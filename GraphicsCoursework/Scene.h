@@ -22,7 +22,7 @@ private:
 	GLuint skybox[5];
 	GameObject* player;
 	GameObject* ground;
-	GameObject* wall, *box;
+	GameObject* wall, * wall2, * wall3, * wall4, *box;
 	Camera* cam;
 	Mesh meshes[2];
 	Shader* shader;
