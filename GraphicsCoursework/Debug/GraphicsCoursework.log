@@ -1,7 +1,14 @@
-﻿  Renderer.cpp
-c:\users\thomas\source\repos\graphicscoursework\graphicscoursework\renderer.cpp(503): warning C4018: '<': signed/unsigned mismatch
-c:\users\thomas\source\repos\graphicscoursework\graphicscoursework\renderer.cpp(441): warning C4101: 'z': unreferenced local variable
-c:\users\thomas\source\repos\graphicscoursework\graphicscoursework\renderer.cpp(441): warning C4101: 'y': unreferenced local variable
-c:\users\thomas\source\repos\graphicscoursework\graphicscoursework\renderer.cpp(441): warning C4101: 'x': unreferenced local variable
-  GraphicsCoursework.vcxproj -> C:\Users\Thomas\source\repos\GraphicsCoursework\Debug\GraphicsCoursework.exe
-  GraphicsCoursework.vcxproj -> C:\Users\Thomas\source\repos\GraphicsCoursework\Debug\GraphicsCoursework.pdb (Partial PDB)
+﻿  Shader.cpp
+  Renderer.cpp
+c:\users\steph\source\repos\graphics-coursework\graphicscoursework\renderer.cpp(503): warning C4018: '<': signed/unsigned mismatch
+c:\users\steph\source\repos\graphics-coursework\graphicscoursework\renderer.cpp(441): warning C4101: 'z': unreferenced local variable
+c:\users\steph\source\repos\graphics-coursework\graphicscoursework\renderer.cpp(441): warning C4101: 'y': unreferenced local variable
+c:\users\steph\source\repos\graphics-coursework\graphicscoursework\renderer.cpp(441): warning C4101: 'x': unreferenced local variable
+  player.cpp
+  Mesh.cpp
+  main.cpp
+  camera.cpp
+  Generating Code...
+  LINK : C:\Users\Steph\Source\Repos\Graphics-Coursework\Debug\GraphicsCoursework.exe not found or not built by the last incremental link; performing full link
+  GraphicsCoursework.vcxproj -> C:\Users\Steph\Source\Repos\Graphics-Coursework\Debug\GraphicsCoursework.exe
+  GraphicsCoursework.vcxproj -> C:\Users\Steph\Source\Repos\Graphics-Coursework\Debug\GraphicsCoursework.pdb (Partial PDB)

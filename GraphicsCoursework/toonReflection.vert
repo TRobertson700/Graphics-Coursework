@@ -1,21 +1,23 @@
-// phong-tex.vert
-// Vertex shader for use with a Phong or other reflection model fragment shader
-// Calculates and passes on V, L, N vectors for use in fragment shader
+// toon shader.vert
 #version 330
 
 uniform mat4 modelview;
+uniform mat4 modelMatrix;
 uniform mat4 projection;
 uniform vec4 lightPosition;
+uniform vec3 cameraPos;
 
-layout(location = 2) in vec3 in_Normal; //location layout qaulifiers
 layout(location = 3) in vec2 in_TexCoord;
 
-
-layout (location = 0) in vec3 in_Position;
+in  vec3 in_Position;
+in  vec3 in_Normal;
 out vec3 ex_N;
 out vec3 ex_V;
 out vec3 ex_L;
+out float ex_D;
 
+out vec3 ex_WorldNorm;
+out vec3 ex_WorldView;
 out vec2 ex_TexCoord;
 
 // multiply each vertex position by the MVP matrix
@@ -24,7 +26,8 @@ void main(void) {
 
 	// vertex into eye coordinates
 	vec4 vertexPosition = modelview * vec4(in_Position,1.0);
-
+	float ex_D = distance(vertexPosition,lightPosition);//Distance from light to vertex
+	
 	// Find V - in eye coordinates, eye is at (0,0,0)
 	ex_V = normalize(-vertexPosition).xyz;
 
@@ -36,10 +39,15 @@ void main(void) {
 	mat3 normalmatrix = transpose(inverse(mat3(modelview)));
 	ex_N = normalize(normalmatrix * in_Normal);
 
-	// L - vector to light source from vertex
+	// L - to light source from vertex
 	ex_L = normalize(lightPosition.xyz - vertexPosition.xyz);
+
+	vec3 worldPos = (modelMatrix * vec4(in_Position, 1.0)).xyz;
+	mat3 normalWorldMatrix = transpose(inverse(mat3(modelMatrix)));
+
+	ex_WorldNorm = normalWorldMatrix * in_Normal;
+	ex_WorldView = cameraPos - worldPos;
 
 	ex_TexCoord = in_TexCoord;
     gl_Position = projection * vertexPosition;
-
 }
