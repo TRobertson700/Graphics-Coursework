@@ -31,7 +31,7 @@ glm::vec4 lightPos(0.0f, 10.0f, 0.0f, 1.0f); //light position
 GLfloat attConstant = 0.05f;
 GLfloat attLinear = 0.0f;
 GLfloat attQuadratic = 0.0f;
-GLuint texture[3];
+GLuint texture[4];
 
 GLfloat toonColour[4] = { 1.0, 1.0, 1.0, 1.0 };
 
@@ -42,35 +42,35 @@ Scene::Scene()
 	meshes[0] =  Mesh();
 	meshes[1] =  Mesh();
 	shader = new Shader();
-	ground = new Environment(glm::vec3(0, 0, 0), glm::vec3(25.0, 0.5, 25.0), 0, glm::vec3(0, 0, 1));
+	ground = new Environment(glm::vec3(0, -1, 0), glm::vec3(25.0, 0.5, 25.0), 0, glm::vec3(0, 1, 0));
 	wall = new Environment(glm::vec3(10, 5, 0), glm::vec3(1, 10, 10), 0, glm::vec3(0, 0, 1));
+	box = new Environment(glm::vec3(0, 5, 0), glm::vec3(2, 2, 2), 0, glm::vec3(0, 0, 1));
 	collision = Collision();
 
-	program[0] = Renderer::initShaders("toon.vert", "toon.frag");
-	Renderer::setLight(program[0], light);
-	Renderer::setMaterial(program[0], tMaterial);
+	////toon shader program
+	program[0] = shader->createShader("toon.vert", "toon.frag", tMaterial, light);
 	GLuint uniformIndex = glGetUniformLocation(program[0], "colour.colour");
 	glUniform4fv(uniformIndex, 1, toonColour);
-	// set light attenuation shader uniforms
 	shader->setAttenuation(program[0], attConstant, attLinear, attQuadratic);
 
-	program[1] = Renderer::initShaders("phong-tex.vert", "phong-tex.frag");
-	Renderer::setLight(program[1], light);
-	Renderer::setMaterial(program[1], material);
-	// set light attenuation shader uniforms
+	////phong shader program
+	program[1] = shader->createShader("phong-tex.vert", "phong-tex.frag", material, light);
 	shader->setAttenuation(program[1], attConstant, attLinear, attQuadratic);
 
-	program[2] = Renderer::initShaders("toonReflection.vert", "toonReflection.frag");
-	Renderer::setLight(program[2], light);
-	Renderer::setMaterial(program[2], material);
-	// set light attenuation shader uniforms
+	////toon metallic reflection program
+	program[2] = shader->createShader("toonReflection.vert", "toonReflection.frag", material, light);
 	shader->setAttenuation(program[2], attConstant, attLinear, attQuadratic);
-	// Binding tex handles to tex units to samplers under programmer control
-	// set cubemap sampler to texture unit 1, arbitrarily
 	uniformIndex = glGetUniformLocation(program[2], "textureUnit1");
 	glUniform1i(uniformIndex, 1);
-	// set tex sampler to texture unit 0, arbitrarily
 	uniformIndex = glGetUniformLocation(program[2], "textureUnit0");
+	glUniform1i(uniformIndex, 0);
+
+	////normal map program
+	program[3] = shader->createShader("normalmap.vert", "normalmap.frag", material, light);
+	shader->setAttenuation(program[3], attConstant, attLinear, attQuadratic);
+	uniformIndex = glGetUniformLocation(program[3], "normalMap");
+	glUniform1i(uniformIndex, 1);
+	uniformIndex = glGetUniformLocation(program[3], "texMap");
 	glUniform1i(uniformIndex, 0);
 
 	skyProgram = Renderer::initShaders("cubeMap.vert", "cubeMap.frag");
@@ -86,13 +86,16 @@ Scene::Scene()
 	loadCubeMap(cubeTexFiles, &skybox[0]);
 
 	meshes[0].createMesh(cubeMeshID, "cube.obj");
-	texture[0] = Renderer::loadBitmap("sky.bmp");
 	meshes[1].createMesh(bunnyMeshID, "bunny-5000.obj");
+	texture[0] = Renderer::loadBitmap("sky.bmp");
 	texture[1] = Renderer::loadBitmap("bunny.bmp");
+	texture[2] = Renderer::loadBitmap("groundnormalsoft.bmp");
+	texture[3] = Renderer::loadBitmap("groundsoft.bmp");
 
-	dynamic_cast<Player*>(player)->setMesh(meshes[1]);
-	dynamic_cast<Environment*>(ground)->setMesh(meshes[0]);
-	dynamic_cast<Environment*>(wall)->setMesh(meshes[0]);
+	player->setMesh(meshes[1]);
+	ground->setMesh(meshes[0]);
+	wall->setMesh(meshes[0]);
+	box->setMesh(meshes[0]);
 
 }
 
@@ -192,32 +195,54 @@ void Scene::drawScene()
 	glUniform3fv(uniformIndex, 1, glm::value_ptr(dynamic_cast<Player*>(player)->getEye()));
 
 	Renderer::setMaterial(program[currProgram], material);
-	dynamic_cast<Player*>(player)->getMesh().drawMesh(dynamic_cast<Player*>(player)->getMesh().getMeshID());
+	player->getMesh().drawMesh(player->getMesh().getMeshID());
 	mvStack.pop();
 	shader->unbindShaderProgram();
 
-
-	glBindTexture(GL_TEXTURE_2D, texture[1]);
+	//ground
 	shader->bindShaderProgram(program[1]);
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	shader->useMatrix4fv(projection, "projection");
 	mvStack.push(mvStack.top());
 	mvStack.top() = ground->draw(mvStack.top());
 	shader->useMatrix4fv(mvStack.top(), "modelview");
 	Renderer::setLightPos(program[1], glm::value_ptr(tmp));
-	dynamic_cast<Environment*>(ground)->getMesh().drawMesh(dynamic_cast<Environment*>(ground)->getMesh().getMeshID());
+	ground->getMesh().drawMesh(ground->getMesh().getMeshID());
 	mvStack.pop();
 
 	//wall
 	mvStack.push(mvStack.top());
-	shader->useMatrix4fv(projection, "projection");
 	mvStack.top() = wall->draw(mvStack.top());
 	shader->useMatrix4fv(mvStack.top(), "modelview");
 	Renderer::setLightPos(program[1], glm::value_ptr(tmp));
-	dynamic_cast<Environment*>(wall)->getMesh().drawMesh(dynamic_cast<Environment*>(wall)->getMesh().getMeshID());
+	wall->getMesh().drawMesh(wall->getMesh().getMeshID());
 	mvStack.pop();
 	shader->unbindShaderProgram();
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	shader->bindShaderProgram(program[3]);
+	shader->useMatrix4fv(projection, "projection");
+	Renderer::setLightPos(program[3], glm::value_ptr(tmp));
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texture[2]); ////the texture to get normals
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture[3]); ////the texture that will be applied
+
+	//box
+	mvStack.push(mvStack.top());
+	modelMatrix = glm::mat4(1.0); //reset model matrix
+	modelMatrix = box->draw(modelMatrix);
+	mvStack.top() *= modelMatrix;
+	uniformIndex = glGetUniformLocation(program[3], "cameraPos");
+	glUniform3fv(uniformIndex, 1, glm::value_ptr(dynamic_cast<Player*>(player)->getEye()));
+	shader->useMatrix4fv(modelMatrix, "modelMatrix");
+	shader->useMatrix4fv(mvStack.top(), "modelview");
+	box->getMesh().drawMesh(box->getMesh().getMeshID());
+	mvStack.pop();
+
+	shader->unbindShaderProgram();
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	mvStack.pop(); //initial matrix
 }

@@ -176,6 +176,8 @@
   <ItemGroup>
     <None Include="cubeMap.frag" />
     <None Include="cubeMap.vert" />
+    <None Include="normalmap.frag" />
+    <None Include="normalmap.vert" />
     <None Include="phong-tex.frag" />
     <None Include="phong-tex.vert" />
     <None Include="toon.frag" />

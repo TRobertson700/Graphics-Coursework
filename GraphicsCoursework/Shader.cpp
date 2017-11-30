@@ -1,10 +1,25 @@
 #include "Shader.h"
-#include "Renderer.h"
 #include "gtc\type_ptr.hpp"
 
+////initialises the shader without material or lights
+GLuint Shader::createShader(const char* vert, const char* frag)
+{
+	GLuint program = Renderer::initShaders(vert, frag);
 
-//// when creating the uniform float for the attenuation in the fragment file, make sure they are labeled the same
-//// as the strings below in the glGetUniformLocation function.
+	return program;
+}
+
+////initialises the shader with materials and lights
+GLuint Shader::createShader(const char* vert, const char* frag, Renderer::materialStruct material, Renderer::lightStruct light)
+{
+	GLuint program = Renderer::initShaders(vert, frag);
+	Renderer::setLight(program, light);
+	Renderer::setMaterial(program, material);
+
+	return program;
+}
+
+//// sets attenuation for the chosen shader, uniforms to use are labelled "attConst", "attLinear", "attQuadratic".
 GLuint Shader::setAttenuation(GLuint program, GLfloat attconst, GLfloat attlinear, GLfloat attquadratic)
 {
 	GLuint uniformIndex = glGetUniformLocation(program, "attConst");
@@ -17,14 +32,14 @@ GLuint Shader::setAttenuation(GLuint program, GLfloat attconst, GLfloat attlinea
 	return uniformIndex;
 }
 
-//bind shader program, updates the current program, call before setting uniform matrices
+////bind shader program, updates the current program, call before setting uniform matrices
 void Shader::bindShaderProgram(GLuint program)
 {
 	currentProgram = program;
 	glUseProgram(currentProgram);
 }
 
-//unbind shader program, call when you before you use another shader.
+////unbind shader program, call when you before you use another shader.
 void Shader::unbindShaderProgram()
 {
 	currentProgram = 0;

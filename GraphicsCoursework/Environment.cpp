@@ -1,7 +1,7 @@
 #include "Environment.h"
 
 
-Environment::Environment(glm::vec3 postiion, glm::vec3 scaled, GLfloat rotate, glm::vec3 rotateAxis)
+Environment::Environment(glm::vec3 position, glm::vec3 scaled, GLfloat rotate, glm::vec3 rotateAxis)
 {
 	mesh = Mesh();
 	box = AABB();

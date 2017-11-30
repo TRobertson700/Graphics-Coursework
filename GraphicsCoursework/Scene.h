@@ -17,12 +17,12 @@ private:
 	GLuint loadCubeMap(const char *fname[6], GLuint *texID);
 
 	GLuint cubeMeshID, bunnyMeshID, skyProgram;
-	GLuint program[3];
+	GLuint program[4];
 	GLuint currProgram;
 	GLuint skybox[5];
 	GameObject* player;
 	GameObject* ground;
-	GameObject* wall;
+	GameObject* wall, *box;
 	Camera* cam;
 	Mesh meshes[2];
 	Shader* shader;
